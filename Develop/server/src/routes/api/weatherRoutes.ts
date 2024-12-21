@@ -1,42 +1,68 @@
 import { Router } from 'express';
 const router = Router();
+import fs from 'fs/promises';
 
 import { v4 as uuidv4 } from 'uuid';
 
 import HistoryService from '../../service/historyService.js';
 import WeatherService from '../../service/weatherService.js';
 
-// TODO: POST Request with city name to retrieve weather data
-// router.post('/', async (req, res) => {
-//   try {
-//     const { city } = req.body;
+//TODO: POST Request with city name to retrieve weather data
+const OPENWEATHER_API_KEY = process.env.API_KEY; // Use environment variables for API key
 
-//     if (!city) {
-//       return res.status(400).json({ error: 'City name is required' });
-//     }
+router.post('/', async (req, res) => {
+  const cityName = req.body.city; // Extract city name from the request body
 
-//     // Fetch weather data
-//     const weatherData = await WeatherService.fetchLocationData(city);
+  if (!cityName || typeof cityName !== 'string' || cityName.trim() === '') {
+    return res.status(400).json({ error: 'City name is required and must be a non-empty string' });
+  }
 
-//     // Save city to search history
-//     if (!searchHistory.includes(city)) {
-//       searchHistory.push(city);
-//     }
+  try {
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${OPENWEATHER_API_KEY}`);
+    const weatherData = await response.json();
 
-//     // Respond with the weather data
-//     res.status(200).json({
-//       success: true,
-//       data: weatherData,
-//       message: `${city} weather retrieved successfully`,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Failed to retrieve weather data' });
-//   }
-// });
+    if (response.ok) {
+      const searchHistoryPath = 'src/db/searchHistory.json';
+
+      let history = [];
+      try {
+        const searchHistory = await fs.readFile(searchHistoryPath, 'utf8');
+        history = JSON.parse(searchHistory);
+      } catch (error) {
+        console.warn('No search history file found, initializing new file.');
+      }
+
+      history.push({ id: uuidv4(), city: cityName });
+      await fs.writeFile(searchHistoryPath, JSON.stringify(history, null, 2));
+      return res.status(200).json(weatherData);
+
+    } else {
+      return res.status(404).json({ error: 'City not found' });
+    }
+  } catch (error) {
+    console.error('Error retrieving weather data:', error);
+    return res.status(500).json({ error: 'Error retrieving weather data' });
+  }
+});
+
+module.exports = router;
+
+
 
 // TODO: GET search history
-router.get('/history', async (req, res) => {});
+router.get('/history', async (req, res) => {
+    try {
+        // Read the searchHistory.json file
+        const data = await fs.readFile('server/src/data', 'utf8');
+        // Parse the JSON data
+        const history = JSON.parse(data);
+        // Send the history as a JSON response
+        res.status(200).json(history);
+    } catch (error) {
+        console.error('Error reading search history:', error);
+        res.status(500).json({ message: 'Error retrieving search history' });
+    }
+});
 
 // * BONUS TODO: DELETE city from search history
 router.delete('/history/:id', async (req, res) => {});
