@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import path from 'path';
+//import path from 'path';
 dotenv.config();
 
 // Import the routes
@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 
-app.use(express.static(path.join(__dirname, '../client/dist')));
+app.use(express.static('../client/dist'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

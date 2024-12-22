@@ -4,8 +4,8 @@ import fs from 'fs/promises';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import HistoryService from '../../service/historyService.js';
-import WeatherService from '../../service/weatherService.js';
+//import HistoryService from '../../service/historyService.js';
+//import WeatherService from '../../service/weatherService.js';
 
 //TODO: POST Request with city name to retrieve weather data
 const OPENWEATHER_API_KEY = process.env.API_KEY; // Use environment variables for API key
@@ -45,12 +45,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-module.exports = router;
-
-
-
 // TODO: GET search history
-router.get('/history', async (req, res) => {
+router.get('/history', async (_req, res) => {
     try {
         // Read the searchHistory.json file
         const data = await fs.readFile('server/src/data', 'utf8');
@@ -65,6 +61,6 @@ router.get('/history', async (req, res) => {
 });
 
 // * BONUS TODO: DELETE city from search history
-router.delete('/history/:id', async (req, res) => {});
+//router.delete('/history/:id', async (_req, _res) => {});
 
 export default router;
