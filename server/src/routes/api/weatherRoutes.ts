@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 //TODO: POST Request with city name to retrieve weather data
 const OPENWEATHER_API_KEY = process.env.API_KEY; // Use environment variables for API key
-
+const OPENWEATHER_API_URL = process.env.API_BASE_URL;
 router.post('/', async (req, res) => {
   const cityName = req.body.name; // Extract city name from the request body
   console.log(cityName); // Debugging log
@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
 
   try {
     // Fetch weather data from OpenWeather API
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&appid=${OPENWEATHER_API_KEY}`);
+    const response = await fetch(`${OPENWEATHER_API_URL}${encodeURIComponent(cityName)}&appid=${OPENWEATHER_API_KEY}`);
     console.log(response);
     const weatherData = await response.json();
     console.log(weatherData);
