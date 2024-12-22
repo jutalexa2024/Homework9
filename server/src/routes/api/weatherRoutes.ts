@@ -40,11 +40,13 @@ router.post('/', async (req, res) => {
 
   try {
     // Construct API URL with query parameter
-    const apiUrl = `?q=${encodeURIComponent(cityName)}&appid=${OPENWEATHER_API_KEY}`;
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&appid=${OPENWEATHER_API_KEY}`;
     console.log(`Constructed API URL: ${apiUrl}`); // Debugging log
 
     // Fetch weather data from OpenWeather API
     const response = await fetch(apiUrl);
+    console.log('Response Status:', response.status);
+    console.log('Response Body:', await response.text()); // Log the raw response body
     const weatherData = await response.json();
     console.log('API Response:', weatherData);
 
