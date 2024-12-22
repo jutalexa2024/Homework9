@@ -1,6 +1,24 @@
 import { Router } from 'express';
 const router = Router();
 import fs from 'fs/promises';
+import path from 'path';
+
+router.get('/history', async (_req, res) => {
+  try {
+    // Correct file path
+    const dataPath = path.join(__dirname, 'src/data/searchHistory.json');
+    // Read the JSON file
+    const data = await fs.readFile(dataPath, 'utf8');
+    // Parse the JSON data
+    const history = JSON.parse(data);
+    // Send the history as a JSON response
+    res.status(200).json(history);
+  } catch (error) {
+    console.error('Error reading search history:', error);
+    res.status(500).json({ message: 'Error retrieving search history' });
+  }
+});
+
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -65,17 +83,19 @@ router.post('/', async (req, res) => {
 
 // TODO: GET search history
 router.get('/history', async (_req, res) => {
-    try {
-        // Read the searchHistory.json file
-        const data = await fs.readFile('server/src/data', 'utf8');
-        // Parse the JSON data
-        const history = JSON.parse(data);
-        // Send the history as a JSON response
-        res.status(200).json(history);
-    } catch (error) {
-        console.error('Error reading search history:', error);
-        res.status(500).json({ message: 'Error retrieving search history' });
-    }
+  try {
+    // Correct file path
+    const dataPath = path.join(__dirname, 'src/data/searchHistory.json');
+    // Read the JSON file
+    const data = await fs.readFile(dataPath, 'utf8');
+    // Parse the JSON data
+    const history = JSON.parse(data);
+    // Send the history as a JSON response
+    res.status(200).json(history);
+  } catch (error) {
+    console.error('Error reading search history:', error);
+    res.status(500).json({ message: 'Error retrieving search history' });
+  }
 });
 
 // * BONUS TODO: DELETE city from search history
