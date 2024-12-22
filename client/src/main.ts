@@ -60,14 +60,21 @@ const fetchSearchHistory = async () => {
       },
     });
 
+    // Check for a successful response
     if (!response.ok) {
-      throw new Error(`Error fetching search history: ${response.status}`);
+      throw new Error(`Error: ${response.status} ${response.statusText}`);
+    }
+
+    // Check if the response is JSON
+    const contentType = response.headers.get('Content-Type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('Invalid content type, expected application/json');
     }
 
     return await response.json();
   } catch (error) {
     console.error('Error fetching search history:', error);
-    throw error; // Optionally rethrow to handle it in the caller
+    throw error; // Optionally propagate the error
   }
 };
 
