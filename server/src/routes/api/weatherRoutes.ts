@@ -12,31 +12,36 @@ const OPENWEATHER_API_KEY = process.env.API_KEY; // Use environment variables fo
 
 router.post('/', async (req, res) => {
   const cityName = req.body.name; // Extract city name from the request body
-  console.log(cityName);
+  console.log(cityName); // Debugging log
 
+  // Validate city name
   if (!cityName || typeof cityName !== 'string' || cityName.trim() === '') {
     return res.status(400).json({ error: 'City name is required and must be a non-empty string' });
   }
 
   try {
+    // Fetch weather data from OpenWeather API
     const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&appid=${OPENWEATHER_API_KEY}`);
     const weatherData = await response.json();
 
     if (response.ok) {
-      const searchHistoryPath = 'src/data/searchHistory.json';
+      const searchHistoryPath = 'src/data/searchHistory.json'; // Check this path
 
       let history = [];
       try {
+        // Read existing search history
         const searchHistory = await fs.readFile(searchHistoryPath, 'utf8');
         history = JSON.parse(searchHistory);
       } catch (error) {
         console.warn('No search history file found, initializing new file.');
       }
 
+      // Add new city to history
       history.push({ id: uuidv4(), city: cityName });
-      await fs.writeFile(searchHistoryPath, JSON.stringify(history, null, 2));
-      return res.status(200).json(weatherData);
+      await fs.writeFile(searchHistoryPath, JSON.stringify(history, null, 2)); // Write updated history
 
+      // Return weather data
+      return res.status(200).json(weatherData);
     } else {
       return res.status(404).json({ error: 'City not found' });
     }
@@ -46,6 +51,7 @@ router.post('/', async (req, res) => {
   }
 });
 
+module.exports = router;
 // TODO: GET search history
 router.get('/history', async (_req, res) => {
     try {
