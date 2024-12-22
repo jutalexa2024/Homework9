@@ -53,7 +53,7 @@ const fetchWeather = async (name: string) => {
 
 const fetchSearchHistory = async () => {
   try {
-    const response = await fetch('/weather/history', {
+    const response = await fetch('/history', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
