@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 const OPENWEATHER_API_KEY = process.env.API_KEY; // Use environment variables for API key
 
 router.post('/', async (req, res) => {
-  const cityName = req.body.city; // Extract city name from the request body
+  const cityName = req.body.name; // Extract city name from the request body
 
   if (!cityName || typeof cityName !== 'string' || cityName.trim() === '') {
     return res.status(400).json({ error: 'City name is required and must be a non-empty string' });
