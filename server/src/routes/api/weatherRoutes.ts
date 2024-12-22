@@ -1,12 +1,11 @@
 import { Router } from 'express';
 const router = Router();
 import fs from 'fs/promises';
-import path from 'path';
 
 router.get('/history', async (_req, res) => {
   try {
     // Correct file path
-    const dataPath = path.join(__dirname, 'src/data/searchHistory.json');
+    const dataPath = ('src/data/searchHistory.json');
     // Read the JSON file
     const data = await fs.readFile(dataPath, 'utf8');
     // Parse the JSON data
