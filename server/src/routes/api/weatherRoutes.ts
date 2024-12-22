@@ -10,9 +10,10 @@ import { v4 as uuidv4 } from 'uuid';
 //TODO: POST Request with city name to retrieve weather data
 const OPENWEATHER_API_KEY = process.env.API_KEY; // Use environment variables for API key
 const OPENWEATHER_API_URL = process.env.API_BASE_URL;
+
 router.post('/', async (req, res) => {
   const cityName = req.body.name; // Extract city name from the request body
-  console.log(cityName); // Debugging log
+  console.log(`Received city name: ${cityName}`); // Debugging log
 
   // Validate city name
   if (!cityName || typeof cityName !== 'string' || cityName.trim() === '') {
@@ -20,14 +21,18 @@ router.post('/', async (req, res) => {
   }
 
   try {
+    // Construct API URL with query parameter
+    const apiUrl = `${OPENWEATHER_API_URL}?q=${encodeURIComponent(cityName)}&appid=${OPENWEATHER_API_KEY}`;
+    console.log(`Constructed API URL: ${apiUrl}`); // Debugging log
+
     // Fetch weather data from OpenWeather API
-    const response = await fetch(`${OPENWEATHER_API_URL}${encodeURIComponent(cityName)}&appid=${OPENWEATHER_API_KEY}`);
-    console.log(response);
+    const response = await fetch(apiUrl);
     const weatherData = await response.json();
-    console.log(weatherData);
+    console.log('API Response:', weatherData);
 
     if (response.ok) {
-      const searchHistoryPath = 'src/data/searchHistory.json'; // Check this path
+      // Process successful response
+      const searchHistoryPath = 'src/data/searchHistory.json';
 
       let history = [];
       try {
@@ -45,13 +50,17 @@ router.post('/', async (req, res) => {
       // Return weather data
       return res.status(200).json(weatherData);
     } else {
-      return res.status(404).json({ error: 'City not found' });
+      // Handle API error
+      console.error('API Error:', weatherData);
+      return res.status(404).json({ error: weatherData.message || 'City not found' });
     }
   } catch (error) {
+    // Log and handle unexpected errors
     console.error('Error retrieving weather data:', error);
     return res.status(500).json({ error: 'Error retrieving weather data' });
   }
 });
+
 
 
 // TODO: GET search history
