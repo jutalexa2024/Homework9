@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+
 // TODO: GET search history
 router.get('/history', async (_req, res) => {
     try {
