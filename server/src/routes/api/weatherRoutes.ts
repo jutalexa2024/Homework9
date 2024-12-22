@@ -22,7 +22,9 @@ router.post('/', async (req, res) => {
   try {
     // Fetch weather data from OpenWeather API
     const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&appid=${OPENWEATHER_API_KEY}`);
+    console.log(response);
     const weatherData = await response.json();
+    console.log(weatherData);
 
     if (response.ok) {
       const searchHistoryPath = 'src/data/searchHistory.json'; // Check this path
