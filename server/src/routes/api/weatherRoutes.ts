@@ -18,11 +18,11 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${OPENWEATHER_API_KEY}`);
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&appid=${OPENWEATHER_API_KEY}`);
     const weatherData = await response.json();
 
     if (response.ok) {
-      const searchHistoryPath = 'src/db/searchHistory.json';
+      const searchHistoryPath = 'src/data/searchHistory.json';
 
       let history = [];
       try {
