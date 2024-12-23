@@ -1,18 +1,14 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-const __filename = fileURLToPath(import.meta.url);
 import fs from 'fs/promises';
-const __dirname = path.dirname(__filename);
 import { Router, type Request, type Response } from 'express';
 
 const router = Router();
 
 router.get('*', (_req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, '../../../client/index.html'));
+    res.sendFile( '../../../client/index.html');
   
 });
 
-const searchHistoryFilePath = path.join(__dirname, '../../data/searchHistory.json');
+const searchHistoryFilePath = ('../../data/searchHistory.json');
 
 // GET /api/weather/history
 router.get('/history', async (_req, res) => {

@@ -1,0 +1,2 @@
+Ask AI for an example post request. 
+Understand if my render url should be having the route added to it or if it should be added to the otherweather url
