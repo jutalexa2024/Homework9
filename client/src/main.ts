@@ -34,13 +34,13 @@ API Calls
 
 */
 
-const fetchWeather = async (name: string) => {
-  const response = await fetch('api/weather', {
+const fetchWeather = async (cityName: string) => {
+  const response = await fetch('/api/weather/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ name }),
+    body: JSON.stringify({ cityName }),
   });
 
   const weatherData = await response.json();
@@ -52,32 +52,14 @@ const fetchWeather = async (name: string) => {
 };
 
 const fetchSearchHistory = async () => {
-  try {
-    const response = await fetch('/history', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    // Check for a successful response
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status} ${response.statusText}`);
-    }
-
-    // Check if the response is JSON
-    const contentType = response.headers.get('Content-Type');
-    if (!contentType || !contentType.includes('application/json')) {
-      throw new Error('Invalid content type, expected application/json');
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching search history:', error);
-    throw error; // Optionally propagate the error
-  }
+  const history = await fetch('/api/weather/history', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return history;
 };
-
 
 const deleteCityFromHistory = async (id: string) => {
   await fetch(`/api/weather/history/${id}`, {

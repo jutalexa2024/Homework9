@@ -1,36 +1,19 @@
-import fs from 'fs/promises';
-import { Router, type Request, type Response } from 'express';
-
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { Router } from 'express';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const router = Router();
 
-router.get('*', (_req: Request, res: Response) => {
-    res.sendFile( '../../../client/index.html');
-  
-});
 
-const searchHistoryFilePath = ('../../data/searchHistory.json');
+router.get('*',(_req, res)=>{
+    if(process.env.NODE_ENV === 'production'){
+    return res.sendFile(path.join(__dirname, '../../../client/dist/index.htnl'))
+    }
 
-// GET /api/weather/history
-router.get('/history', async (_req, res) => {
-  try {
-    // Read the search history JSON file
-    const fileContent = await fs.readFile(searchHistoryFilePath, 'utf-8');
-    
-    // Parse the JSON data
-    const searchHistory = JSON.parse(fileContent);
+    res.send('This is the development server. Use npm run start:dev to start the client and server')
+})
 
-    // Send the data as JSON response
-    res.json(searchHistory);
-  } catch (error) {
-    console.error('Error reading search history:', error);
-
-    // Handle errors (e.g., file not found or JSON parsing errors)
-    res.status(500).json({ error: 'Unable to retrieve search history.' });
-  }
-});
-
-
-
-
+// TODO: Define route to serve index.html
 
 export default router;
